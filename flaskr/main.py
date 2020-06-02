@@ -19,7 +19,7 @@ def healthcheck():
 @app.route("/api", methods=["POST"])
 def addLog():
     data = request.json
-    if "jid" and "displayname" and "timestamp" and "action" in data:
+    if "jid" and "displayname" and "action" in data:
         client = MongoClient("mongodb://localhost:27017/")
         db = client["jitsilog"]
         logs = db["logs"]
