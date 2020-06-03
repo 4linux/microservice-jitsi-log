@@ -1,9 +1,9 @@
-from flask import Flask, jsonify, Response, request
+from flaskr import app
+from flask import jsonify, Response, request
+from platform import node
 from pymongo import MongoClient
+from os import getenv
 from datetime import datetime
-
-
-app = Flask(__name__)
 
 
 @app.route("/")
@@ -13,14 +13,18 @@ def index():
 
 @app.route("/healthcheck")
 def healthcheck():
-    return Response("Awake and alive", status=200, mimetype="text/plain")
+    return Response(("Awake and alive from ", node()), status=200, mimetype="text/plain")
 
 
-@app.route("/api", methods=["POST"])
+@app.route("/api/v1.0/logs", methods=["POST"])
 def addLog():
     data = request.json
     if "jid" and "displayname" and "action" in data:
-        client = MongoClient("mongodb://localhost:27017/")
+        if getenv('URI_MONGODBD'):
+            URI=getenv('URI_MONGODBD')
+        else:
+            URI="mongodb://localhost:27017/"
+        client = MongoClient(URI)
         db = client["jitsilog"]
         logs = db["logs"]
         insert = {
