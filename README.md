@@ -2,6 +2,11 @@
 
 Microservice para logging de eventos de login\logout do Jitsi atraves da API em JS do [lib-jitsi-meet](https://github.com/jitsi/lib-jitsi-meet)
 
+## TODO
+
+[ ] - Melhorar a imagem do container
+[ ] - Adicionar testes
+
 ## Endpoints
 
 | Método  | Endpoint             | Ação                             |
