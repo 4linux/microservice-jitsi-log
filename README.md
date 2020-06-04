@@ -13,7 +13,7 @@ Microservice para logging de eventos de login e logout do Jitsi.
 | Método  | Endpoint             | Ação                             |
 |---------|----------------------|----------------------------------|
 | POST    | /api/v1.0/logs       | Cria u a novo log                |
-| GET     | /healtcheck          | Checa a saude da aplicacao       |
+| GET     | //healthcheck        | Checa a saude da aplicacao       |
 | GET     | /                    | Checa o nome do microservice     |
 
 ## Modelo de dados
