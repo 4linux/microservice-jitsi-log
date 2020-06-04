@@ -10,6 +10,7 @@ stdenv.mkDerivation {
     pkgs.python37Packages.pip
     pkgs.python37Packages.black
     pkgs.python37Packages.flake8
+    pkgs.python37Packages.pytest
   ];
 
   shellHook = ''
