@@ -21,21 +21,32 @@ def healthcheck():
 @app.route("/api/v1.0/logs", methods=["POST"])
 def addLog():
     data = request.json
-    if "jid" and "displayname" and "action" in data:
-        if getenv("URI_MONGODBD"):
-            URI = getenv("URI_MONGODBD")
+    try:
+        if "courseid" and "jid" and "displayname" and "action" in data:
+            if getenv("URI_MONGODBD"):
+                URI = getenv("URI_MONGODBD")
+            else:
+                URI = "mongodb://localhost:27017/"
+            try:
+                client = MongoClient(URI)
+                db = client["jitsilog"]
+                logs = db["logs"]
+                insert = {
+                    "courseid": data["courseid"],
+                    "jid": data["jid"],
+                    "displayname": data["displayname"],
+                    "timestamp": datetime.utcnow(),
+                    "action": data["action"],
+                }
+                insert["id"] = logs.insert_one(insert).inserted_id
+                return Response(str(insert["id"]), status=200, mimetype="text/plain")
+            except (AutoReconnect, ConnectionFailure, NetworkTimeout, NotMasterError,ServerSelectionTimeoutError) as e:
+                return Response("Falha na conexao com o banco!", status=503, mimetype="text/plain")
+            except InvalidURI as e:
+                return Response("Erro! URI invalida!", status=500, mimetype="text/plain")
         else:
-            URI = "mongodb://localhost:27017/"
-        client = MongoClient(URI)
-        db = client["jitsilog"]
-        logs = db["logs"]
-        insert = {
-            "jid": data["jid"],
-            "displayname": data["displayname"],
-            "timestamp": datetime.now().strftime("%Y-%m-%d-%H:%M:%S"),
-            "action": data["action"],
-        }
-        insert["id"] = logs.insert_one(insert).inserted_id
-        return Response(str(insert["id"]), status=200, mimetype="text/plain")
-    else:
-        return Response("Error!", status=400, mimetype="text/plain")
+            return Response("Erro! Falta argumentos!", status=400, mimetype="text/plain")
+            app.logger.info('Carga incorreta')
+    except TypeError:
+        return Response("Erro! Payload JSON nulo!", status=400, mimetype="text/plain")
+        app.logger.info('Carga incorreta')
