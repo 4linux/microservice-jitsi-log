@@ -1,33 +1,38 @@
 # microservice-jitsi-log
 
-Microservice para logging de eventos de login\logout do Jitsi atraves da API em JS do [lib-jitsi-meet](https://github.com/jitsi/lib-jitsi-meet)
+Microservice para logging de eventos de login e logout do Jitsi. 
 
 ## TODO
 
-[ ] - Melhorar a imagem do container
-[ ] - Adicionar testes
+ * [ ] Melhorar imagem do container
+ * [ ] Fazer o logging funcionar no WSGI (traceback ok!)
+ * [ ] Adicionar testes
 
 ## Endpoints
 
 | Método  | Endpoint             | Ação                             |
 |---------|----------------------|----------------------------------|
-| POST    | /api                 | Cria uma novo log                |
+| POST    | /api/v1.0/logs       | Cria u a novo log                |
 | GET     | /healtcheck          | Checa a saude da aplicacao       |
+| GET     | /                    | Checa o nome do microservice     |
 
 ## Modelo de dados
 
+- courseid - ID do curso
 - jid - 8 caracteres alfanumericos
 - displayname - Nome do usuario
 - action - login ou logout
-
+- timestamp - datetime UTC
 
 Payload:
 
 ```
 {
+   "courseid": "2",
    "jid":"4321dcba",
    "displayname":"admin",
-   "action":"login"
+   "action":"login",
+   "timestamp": "2020-06-04 06:10:32.172286"
 }
 ```
 
@@ -35,9 +40,6 @@ Payload:
 
 ### Dev
 
-Para subir a aplicacao na sua maquina basta efetuar o clone do repositorio, criar o virtualenv, subir as dependencias, subir o container do MongoDB expondo a porta 27017 e chamar o Flask. Esse processo pode ser feito com os comandos abaixo:
+Para subir a aplicacao na sua maquina basta efetuar o clone do repositorio, ativar o virtualenv, subir as dependencias, subir o container do MongoDB expondo a porta 27017 e chamar o Flask. Esse processo pode ser feito com os comandos abaixo:
 
-
-### Prod
-
-[] Escolher o WSGI para deploy
+Ou utilizar o docker-compose.
