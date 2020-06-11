@@ -1,9 +1,11 @@
-from flaskr import app
-from flask import Response, request
 from platform import node
-from pymongo import MongoClient
 from os import getenv
 from datetime import datetime
+
+from flask import Response, request
+from pymongo import MongoClient
+
+from flaskr import app
 
 
 @app.route("/")
@@ -18,7 +20,7 @@ def healthcheck():
     )
 
 
-@app.route("/api/v1.0/logs", methods=["POST"])
+@app.route("/v1/logs", methods=["POST"])
 def addLog():
     data = request.json
     try:

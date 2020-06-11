@@ -4,6 +4,12 @@ Microservice para logging de eventos de login e logout do Jitsi.
 
 ## TODO
 
+
+ * [ ] Deixar parametros do insert como vars de ambiente ou armazenar tudo
+ * [ ] Mensagem de erro com parametros obrigatorios
+ * [ ] getenv para o modulo
+ * [ ] Verificar timestamp do banco
+ * [ ] Atualizar payload
  * [ ] Melhorar imagem do container
  * [ ] Fazer o logging funcionar no WSGI (traceback ok!)
  * [ ] Adicionar testes
@@ -40,6 +46,11 @@ Payload:
 
 ### Dev
 
-Para subir a aplicacao na sua maquina basta efetuar o clone do repositorio, ativar o virtualenv, subir as dependencias, subir o container do MongoDB expondo a porta 27017 e chamar o Flask. Esse processo pode ser feito com os comandos abaixo:
+```bash
+docker-compose up --build -d
+```
 
-Ou utilizar o docker-compose.
+## Agradecimentos
+
+* [Arthur Nascimento](https://github.com/tureba) - Code review
+* [Lucas Ricciardi de Salles](https://github.com/LucasRicciardi) - Code review
