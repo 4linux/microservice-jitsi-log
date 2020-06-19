@@ -5,11 +5,7 @@ Microservice para logging de eventos de login e logout do Jitsi.
 ## TODO
 
 
- * [ ] Deixar parametros do insert como vars de ambiente ou armazenar tudo
- * [ ] Mensagem de erro com parametros obrigatorios
- * [ ] getenv para o modulo
- * [ ] Verificar timestamp do banco
- * [ ] Atualizar payload
+ * [ ] Melhorar check de campos
  * [ ] Melhorar imagem do container
  * [ ] Fazer o logging funcionar no WSGI (traceback ok!)
  * [ ] Adicionar testes
@@ -18,28 +14,26 @@ Microservice para logging de eventos de login e logout do Jitsi.
 
 | Método  | Endpoint             | Ação                             |
 |---------|----------------------|----------------------------------|
-| POST    | /api/v1.0/logs       | Cria u a novo log                |
+| POST    | /api/v1.0/logs       | Cria um novo log                 |
 | GET     | //healthcheck        | Checa a saude da aplicacao       |
 | GET     | /                    | Checa o nome do microservice     |
 
 ## Modelo de dados
 
-- courseid - ID do curso
-- jid - 8 caracteres alfanumericos
-- displayname - Nome do usuario
-- action - login ou logout
-- timestamp - datetime UTC
-
 Payload:
 
-```
+```javascript
 {
-   "courseid": "2",
-   "jid":"4321dcba",
-   "displayname":"admin",
-   "action":"login",
-   "timestamp": "2020-06-04 06:10:32.172286"
+  "sala": "10_5_Hadoop",
+  "curso": 10,
+  "turma": "Turma 1522",
+  "aluno": "Bryan A.",
+  "jid": "b28cb3fe-f53f-4006-99d9-16e5db86f35c@jitsi.domain.tld/7utDTbSM",
+  "email": "bryan@domain.tld",
+  "timestamp": 1592572981,
+  "action": "login"
 }
+
 ```
 
 ## Deploy
