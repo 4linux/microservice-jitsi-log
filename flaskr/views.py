@@ -2,15 +2,15 @@ from platform import node
 from os import getenv
 from datetime import datetime
 
-from flask import Response, request
-from pymongo import MongoClient
+from flask import Response, request, jsonify
+from pymongo import MongoClient, errors
 
 from flaskr import app
 
 
 @app.route("/")
 def index():
-    return Response("microservice-jitsi-log", mimetype="text/plain")
+    return Response("microservice-jitsi-log", status=200, mimetype="text/plain")
 
 
 @app.route("/healthcheck")
@@ -24,31 +24,37 @@ def healthcheck():
 def addLog():
     data = request.json
     try:
-        if "courseid" and "jid" and "displayname" and "action" in data:
-            if getenv("URI_MONGODBD"):
-                URI = getenv("URI_MONGODBD")
+        if getenv("REQUIRED_FIELDS"):
+            fields = (
+                getenv("REQUIRED_FIELDS").replace("'", "").replace('"', "").split(",")
+            )
+        else:
+            fields = ["sala", "email", "timestamp", "action"]
+        if all(elem in data.keys() for elem in fields):
+            if getenv("URI_MONGODB"):
+                URI = getenv("URI_MONGODB")
             else:
                 URI = "mongodb://localhost:27017/"
             try:
                 client = MongoClient(URI)
                 db = client["jitsilog"]
                 logs = db["logs"]
-                insert = {
-                    "courseid": data["courseid"],
-                    "jid": data["jid"],
-                    "displayname": data["displayname"],
-                    "timestamp": datetime.utcnow(),
-                    "action": data["action"],
-                }
-                insert["id"] = logs.insert_one(insert).inserted_id
-                return Response(str(insert["id"]), status=200, mimetype="text/plain")
-            except (AutoReconnect, ConnectionFailure, NetworkTimeout, NotMasterError,ServerSelectionTimeoutError) as e:
-                return Response("Falha na conexao com o banco!", status=503, mimetype="text/plain")
-            except InvalidURI as e:
-                return Response("Erro! URI invalida!", status=500, mimetype="text/plain")
+                data["id"] = logs.insert_one(data).inserted_id
+                return jsonify(id=str(data["id"])), 201
+            except (
+                errors.AutoReconnect,
+                errors.ConnectionFailure,
+                errors.NetworkTimeout,
+                errors.NotMasterError,
+                errors.ServerSelectionTimeoutError,
+            ) as e:
+                return (
+                    jsonify(erro="Falha na conexao com o banco!", exception=str(e)),
+                    500,
+                )
+            except errors.InvalidURI as e:
+                return jsonify(erro="Erro! URI invalida!", exception=str(e)), 500
         else:
-            return Response("Erro! Falta argumentos!", status=400, mimetype="text/plain")
-            app.logger.info('Carga incorreta')
-    except TypeError:
-        return Response("Erro! Payload JSON nulo!", status=400, mimetype="text/plain")
-        app.logger.info('Carga incorreta')
+            return jsonify(erro="Falta argumentos!", argumentos_necessarios=fields), 400
+    except TypeError as e:
+        return jsonify(erro="Payload JSON nulo ou malformado!", exception=str(e)), 400
