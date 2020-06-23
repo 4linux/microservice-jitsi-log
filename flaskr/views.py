@@ -35,11 +35,20 @@ def addLog():
                 URI = getenv("URI_MONGODB")
             else:
                 URI = "mongodb://localhost:27017/"
+            if getenv("DATABASE"):
+                DATABASE = getenv("DATABASE")
+            else:
+                DATABASE = "jitsilog"
+            if getenv("COLLECTION"):
+                COLLECTION = getenv("COLLECTION")
+            else:
+                COLLECTION = "logs"
             try:
                 client = MongoClient(URI)
-                db = client["jitsilog"]
-                logs = db["logs"]
-                data["id"] = logs.insert_one(data).inserted_id
+                db = client[DATABASE]
+                collection = db[COLLECTION]
+                data["id"] = collection.insert_one(data).inserted_id
+                client.close()
                 return jsonify(id=str(data["id"])), 201
             except (
                 errors.AutoReconnect,

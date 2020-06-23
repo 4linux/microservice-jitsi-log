@@ -13,6 +13,8 @@ services:
         environment:
           - URI_MONGODB=mongodb://mongo:27017/
           - REQUIRED_FIELDS=sala,curso,turma,aluno,jid,email,timestamp,action
+          - DATABASE=jitsilog
+          - COLLECTION=logs
         ports:
             - "5000:80"
         deploy:
